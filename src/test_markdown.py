@@ -1,9 +1,13 @@
 import unittest
-from markdown import split_nodes_delimiter, extract_markdown_images, extract_markdown_links, split_nodes_image, split_nodes_link
+from markdown import split_nodes_delimiter, extract_markdown_images, extract_markdown_links, split_nodes_image, split_nodes_link, text_to_textnodes
 from textnode import TextNode, TextType
 
 
 class TestMarkdown(unittest.TestCase):
+    
+    #######################################
+    # SPLIT NODES DELIMITER TESTS
+    #######################################
     def test_basic_delimiter(self):
         node = TextNode("This is text with a `code block` word", TextType.PLAIN)
         new_nodes = split_nodes_delimiter([node], "`", TextType.CODE)
@@ -61,6 +65,11 @@ class TestMarkdown(unittest.TestCase):
             node = TextNode("This is `invalid markdown", TextType.PLAIN)
             new_nodes = split_nodes_delimiter([node], "`", TextType.CODE)
 
+
+    #######################################
+    # EXTRACT MARKDOWN TESTS
+    #######################################
+
     def test_extract_markdown_images(self):
         text = "This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif) and ![obi wan](https://i.imgur.com/fJRm4Vk.jpeg)"
         self.assertEqual(
@@ -87,6 +96,10 @@ class TestMarkdown(unittest.TestCase):
             extract_markdown_links(text),
             [("to boot dev", "https://www.boot.dev"), ("to youtube", "https://www.youtube.com/@bootdotdev")]
         )
+
+    #######################################
+    # SPLIT IMAGES TESTS
+    #######################################
 
     def test_split_images_passthrough(self):
         node = TextNode(
@@ -133,6 +146,10 @@ class TestMarkdown(unittest.TestCase):
             new_nodes,
         )
 
+    #######################################
+    # SPLIT LINKS TESTS
+    #######################################
+
     def test_split_links_passthrough(self):
         node = TextNode(
             "This is text with no links",
@@ -177,4 +194,31 @@ class TestMarkdown(unittest.TestCase):
             ],
             new_nodes,
         )
+
+    #######################################
+    # TEXT TO TEXTNODE TESTS
+    #######################################
+
+    def test_text_to_textnode(self):
+        text = 'This is **text** with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)'
+        self.assertEqual([
+                TextNode("This is ", TextType.PLAIN),
+                TextNode("text", TextType.BOLD),
+                TextNode(" with an ", TextType.PLAIN),
+                TextNode("italic", TextType.ITALIC),
+                TextNode(" word and a ", TextType.PLAIN),
+                TextNode("code block", TextType.CODE),
+                TextNode(" and an ", TextType.PLAIN),
+                TextNode("obi wan image", TextType.IMAGE, "https://i.imgur.com/fJRm4Vk.jpeg"),
+                TextNode(" and a ", TextType.PLAIN),
+                TextNode("link", TextType.LINK, "https://boot.dev"),
+            ], text_to_textnodes(text))
     
+    def test_text_to_textnode_plain(self):
+        text = "This is plain text only, not expecting any splits"
+        self.assertEqual(text_to_textnodes(text), [TextNode(text, TextType.PLAIN)])
+    
+    def test_text_to_textnode_invalid_markdown(self):
+        text = "This is **an example of invalid markdown"
+        with self.assertRaises(Exception):
+            text_to_textnodes(text)
