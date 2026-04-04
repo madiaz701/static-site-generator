@@ -6,7 +6,7 @@ class ParentNode(HTMLNode):
     
     def to_html(self):
         # Check if tag is missing
-        if self.tag is None or self.tag == '':
+        if self.tag is None:
             raise ValueError('Tag required to render HTML')
         
         # Check if children is missing
