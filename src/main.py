@@ -9,11 +9,13 @@ def main():
     dummy_node = TextNode('Dummy text', TextType.LINK, 'https://www.boot.dev')
     print(dummy_node)
     
-    basepath = sys.argv[0]
+    basepath = sys.argv[1]
     # If no basepath, default to "/"
     if not basepath:
         basepath = "/"
 
+    # Log the basepath being used
+    print(f"Using basepath: {basepath}")
     copy_static_files_to_docs()
     generate_pages_recursively('content', 'template.html', 'docs', basepath)
 

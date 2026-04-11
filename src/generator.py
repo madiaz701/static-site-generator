@@ -43,4 +43,4 @@ def generate_pages_recursively(dir_path_content, template_path, dest_dir_path, b
 
                 # Create any necessary directories in dest_dir_path
                 os.makedirs(os.path.dirname(dest_path), exist_ok=True)
-                generate_page(from_path, template_path, dest_path)
+                generate_page(from_path, template_path, dest_path, basepath)
