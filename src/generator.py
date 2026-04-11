@@ -4,7 +4,7 @@ from markdown import extract_title
 from markdown_to_html import markdown_to_html_node
 
 
-def generate_page(from_path, template_path, dest_path):
+def generate_page(from_path, template_path, dest_path, basepath="/"):
     # Print "Generating page: {from_path} to {dest_path} using template {template_path}"
     print(f"Generating page: {from_path} to {dest_path} using template {template_path}")
 
@@ -24,13 +24,16 @@ def generate_page(from_path, template_path, dest_path):
             template = template.replace('{{ Title }}', title)
 
             # Insert html into template, replacing {{ Content }}
-            final_html = template.replace('{{ Content }}', html)
+            template = template.replace('{{ Content }}', html)
+
+            # Replace any instances of "href="/ with "href="{basepath} and "src="/ with "src="{basepath} in the final html to account for basepath
+            final_html = template.replace('href="/', f'href="{basepath}').replace('src="/', f'src="{basepath}')
 
             # Write final_html to dest_path
             with open(dest_path, 'w') as d:
                 d.write(final_html)
 
-def generate_pages_recursively(dir_path_content, template_path, dest_dir_path):
+def generate_pages_recursively(dir_path_content, template_path, dest_dir_path, basepath="/"):
     # For each markdown file in dir_path_content and subdirectories, generate a page in dest_dir_path with the same directory structure, using template_path
     for root, dirs, files in os.walk(dir_path_content):
         for filename in files:
