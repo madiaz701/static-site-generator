@@ -1,5 +1,5 @@
 import unittest
-from markdown import split_nodes_delimiter, extract_markdown_images, extract_markdown_links, split_nodes_image, split_nodes_link, text_to_textnodes
+from markdown import extract_title, split_nodes_delimiter, extract_markdown_images, extract_markdown_links, split_nodes_image, split_nodes_link, text_to_textnodes
 from textnode import TextNode, TextType
 
 
@@ -222,3 +222,22 @@ class TestMarkdown(unittest.TestCase):
         text = "This is **an example of invalid markdown"
         with self.assertRaises(Exception):
             text_to_textnodes(text)
+
+    def test_extract_title(self):
+        md = """# This is the title
+This is the subtitle
+"""
+        self.assertEqual(extract_title(md), "This is the title")
+
+    def test_extract_title_no_title(self):
+        md = """This is the subtitle
+"""
+        with self.assertRaises(Exception):
+            extract_title(md)
+
+    def test_extract_title_middle_title_exception(self):
+        md = """This is the subtitle
+# This is the title
+"""
+        with self.assertRaises(Exception):
+            extract_title(md)

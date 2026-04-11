@@ -1,5 +1,6 @@
 import shutil
 import os
+from generator import generate_page
 from textnode import TextNode, TextType
 
 
@@ -7,6 +8,7 @@ def main():
     dummy_node = TextNode('Dummy text', TextType.LINK, 'https://www.boot.dev')
     print(dummy_node)
     copy_static_files_to_public()
+    generate_page('content/index.md', 'template.html', 'public/index.html')
 
 
 def copy_static_files_to_public():

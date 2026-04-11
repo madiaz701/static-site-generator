@@ -97,3 +97,12 @@ def text_to_textnodes(text):
     nodes = split_nodes_image(nodes)
     nodes = split_nodes_link(nodes)
     return nodes
+
+def extract_title(markdown):
+    # Extract the h1 header from the 1st line of markdown and return it.  If no h1 header on the 1st line, raise exception
+    lines = markdown.split('\n')
+    if lines:
+        first_line = lines[0]
+        if first_line.startswith('# '):
+            return first_line[2:].strip()
+    raise Exception('No h1 header found on the 1st line of markdown')
