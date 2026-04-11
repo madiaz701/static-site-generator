@@ -1,6 +1,6 @@
 import shutil
 import os
-from generator import generate_page
+from generator import generate_pages_recursively
 from textnode import TextNode, TextType
 
 
@@ -8,7 +8,7 @@ def main():
     dummy_node = TextNode('Dummy text', TextType.LINK, 'https://www.boot.dev')
     print(dummy_node)
     copy_static_files_to_public()
-    generate_page('content/index.md', 'template.html', 'public/index.html')
+    generate_pages_recursively('content', 'template.html', 'public')
 
 
 def copy_static_files_to_public():

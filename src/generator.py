@@ -1,3 +1,4 @@
+import os
 
 from markdown import extract_title
 from markdown_to_html import markdown_to_html_node
@@ -28,3 +29,15 @@ def generate_page(from_path, template_path, dest_path):
             # Write final_html to dest_path
             with open(dest_path, 'w') as d:
                 d.write(final_html)
+
+def generate_pages_recursively(dir_path_content, template_path, dest_dir_path):
+    # For each markdown file in dir_path_content and subdirectories, generate a page in dest_dir_path with the same directory structure, using template_path
+    for root, dirs, files in os.walk(dir_path_content):
+        for filename in files:
+            if filename.endswith('.md'):
+                from_path = os.path.join(root, filename)
+                dest_path = os.path.join(dest_dir_path, os.path.relpath(from_path, dir_path_content).replace('.md', '.html'))
+
+                # Create any necessary directories in dest_dir_path
+                os.makedirs(os.path.dirname(dest_path), exist_ok=True)
+                generate_page(from_path, template_path, dest_path)
